@@ -1,7 +1,7 @@
 name: pos_printer_manager
 description: A new flutter plugin project.
 version: 0.0.1
-homepage:
+homepage: https://github.com/kechankrisna/pos_printer_manager
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
