@@ -1,3 +1,4 @@
 ## 0.0.1
 
-* TODO: Describe initial release.
+* BluetoothPrinterManager allow to scan bluetooth paired printer device, connect, writeBytes
+* NetworkPrinterManager allow to scan network printer device, connect, writeBytes

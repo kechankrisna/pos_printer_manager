@@ -11,7 +11,6 @@ class ESCPrinterService {
 
   ESCPrinterService(this.receipt);
   
-
   Future<List<int>> getBytes(
       {PaperSize paperSize: PaperSize.mm80, CapabilityProfile profile}) async {
     List<int> bytes = [];
