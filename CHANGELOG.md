@@ -1,3 +1,7 @@
+## 0.0.2
+
+* license public added
+
 ## 0.0.1
 
 * BluetoothPrinterManager allow to scan bluetooth paired printer device, connect, writeBytes
