@@ -84,11 +84,11 @@ _scan() async {
 
 | Device | Wireless | Bluetooth | USB |
 | --- | --- | --- | --- |
-| Android | [x] | [x] | [ ] |
-| IOS | [x] | [ ] | [ ] |
-| Macos | [x] | [ ] | [ ] |
-| Desktop | [x] | [ ] | [ ] |
-| Linux | [x] | [ ] | [ ] |
+| Android | &check; | &check; | &cross; |
+| IOS | &check; | &cross; | &cross; |
+| Macos | &check; | &cross; | &cross; |
+| Desktop | &check; | &cross; | &cross; |
+| Linux | &check; | &cross; | &cross; |
 
 *** USB: will be the set to the next plan of update
 
