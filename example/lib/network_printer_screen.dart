@@ -32,6 +32,7 @@ class _NetWorkPrinterScreenState extends State<NetWorkPrinterScreen> {
                     onLongPress: () {
                       _startPrinter();
                     },
+                    selected: printer.connected,
                   ))
               .toList(),
         ],
@@ -60,6 +61,10 @@ class _NetWorkPrinterScreenState extends State<NetWorkPrinterScreen> {
     var profile = await CapabilityProfile.load();
     var manager = NetworkPrinterManager(printer, paperSize, profile);
     await manager.connect();
+    setState(() {
+      _manager = manager;
+      printer.connected = true;
+    });
   }
 
   _startPrinter() async {
@@ -67,6 +72,8 @@ class _NetWorkPrinterScreenState extends State<NetWorkPrinterScreen> {
     var bytes = await WebcontentConverter.contentToImage(content: content);
     var service = ESCPrinterService(bytes);
     var data = await service.getBytes();
-    _manager.writeBytes(data);
+    if (_manager != null) {
+      _manager.writeBytes(data);
+    }
   }
 }
