@@ -68,11 +68,12 @@ class _NetWorkPrinterScreenState extends State<NetWorkPrinterScreen> {
   }
 
   _startPrinter() async {
-    final content = Demo.getReceiptContent();
+    final content = Demo.getShortReceiptContent();
     var bytes = await WebcontentConverter.contentToImage(content: content);
     var service = ESCPrinterService(bytes);
     var data = await service.getBytes();
     if (_manager != null) {
+      print("isConnected ${_manager.isConnected}");
       _manager.writeBytes(data);
     }
   }

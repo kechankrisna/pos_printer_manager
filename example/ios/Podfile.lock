@@ -1,0 +1,28 @@
+PODS:
+  - Flutter (1.0.0)
+  - webcontent_converter (0.0.1):
+    - Flutter
+  - wifi (0.0.1):
+    - Flutter
+
+DEPENDENCIES:
+  - Flutter (from `Flutter`)
+  - webcontent_converter (from `.symlinks/plugins/webcontent_converter/ios`)
+  - wifi (from `.symlinks/plugins/wifi/ios`)
+
+EXTERNAL SOURCES:
+  Flutter:
+    :path: Flutter
+  webcontent_converter:
+    :path: ".symlinks/plugins/webcontent_converter/ios"
+  wifi:
+    :path: ".symlinks/plugins/wifi/ios"
+
+SPEC CHECKSUMS:
+  Flutter: 434fef37c0980e73bb6479ef766c45957d4b510c
+  webcontent_converter: baa47c5fc5a9e8d703897a0b128f969c58fd2c7f
+  wifi: d7d77c94109e36c4175d845f0a5964eadba71060
+
+PODFILE CHECKSUM: aafe91acc616949ddb318b77800a7f51bffa2a4c
+
+COCOAPODS: 1.10.1

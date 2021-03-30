@@ -33,7 +33,7 @@ class NetworkPrinterManager extends PrinterManager {
   Future<ConnectionResponse> connect(
       {Duration timeout: const Duration(seconds: 5)}) async {
     try {
-      socket = await Socket.connect(address, port, timeout: timeout);
+      this.socket = await Socket.connect(address, port, timeout: timeout);
       this.isConnected = true;
       this.printer.connected = true;
       return Future<ConnectionResponse>.value(ConnectionResponse.success);
@@ -65,7 +65,8 @@ class NetworkPrinterManager extends PrinterManager {
       if (!isConnected) {
         await connect();
       }
-      socket.add(data);
+      print(this.socket);
+      this.socket.add(data);
       await disconnect();
     } catch (e) {
       print("Error : $e");
