@@ -1,3 +1,7 @@
+## 0.0.2+1
+
+* hotfix
+
 ## 0.0.2
 
 * license public added
