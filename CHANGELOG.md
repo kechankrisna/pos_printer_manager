@@ -1,3 +1,8 @@
+## 0.0.3
+
+* ios bluetooth ble support
+
+
 ## 0.0.2+1
 
 * hotfix

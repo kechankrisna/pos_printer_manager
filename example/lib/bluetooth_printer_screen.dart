@@ -75,6 +75,7 @@ class _BluetoothPrinterScreenState extends State<BluetoothPrinterScreen> {
     var service = ESCPrinterService(bytes);
     var data = await service.getBytes(paperSize: PaperSize.mm58);
     if (_manager != null) {
+      print("isConnected ${_manager.isConnected}");
       _manager.writeBytes(data);
     }
   }

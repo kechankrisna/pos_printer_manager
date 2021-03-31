@@ -1833,7 +1833,7 @@ class Demo {
     }
     
     hr {
-        border-top: 1px dashed black;
+        border-top: 2px dashed black;
     }
     
     .text-center {

@@ -1,6 +1,6 @@
 name: pos_printer_manager
 description: flutter package for print or list down both wireless and bluetooth esc printer devices.
-version: 0.0.2+1
+version: 0.0.3
 homepage: https://github.com/kechankrisna/pos_printer_manager
 
 environment:

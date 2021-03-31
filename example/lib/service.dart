@@ -10,7 +10,7 @@ class ESCPrinterService {
   CapabilityProfile _profile;
 
   ESCPrinterService(this.receipt);
-  
+
   Future<List<int>> getBytes(
       {PaperSize paperSize: PaperSize.mm80, CapabilityProfile profile}) async {
     List<int> bytes = [];
@@ -23,8 +23,8 @@ class ESCPrinterService {
     final img.Image _resize =
         img.copyResize(img.decodeImage(receipt), width: _paperSize.width);
     bytes += generator.image(_resize);
+    bytes += generator.feed(2);
     bytes += generator.cut();
-    bytes += generator.reset();
     return bytes;
   }
 }
