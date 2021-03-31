@@ -85,7 +85,7 @@ _scan() async {
 | Device | Wireless | Bluetooth | USB |
 | --- | --- | --- | --- |
 | Android | &check; | &check; | &cross; |
-| IOS | &check; | &cross; | &cross; |
+| IOS | &check; | &check; | &cross; |
 | Macos | &check; | &cross; | &cross; |
 | Desktop | &check; | &cross; | &cross; |
 | Linux | &check; | &cross; | &cross; |
