@@ -44,11 +44,13 @@ class _BluetoothPrinterScreenState extends State<BluetoothPrinterScreen> {
   }
 
   _scan() async {
+    print("scan");
     setState(() {
       _isLoading = true;
       _printers = [];
     });
     var printers = await BluetoothPrinterManager.discover();
+    print(printers);
     setState(() {
       _isLoading = false;
       _printers = printers;
@@ -68,7 +70,7 @@ class _BluetoothPrinterScreenState extends State<BluetoothPrinterScreen> {
   }
 
   _startPrinter() async {
-    final content = Demo.getReceiptContent();
+    final content = Demo.getShortReceiptContent();
     var bytes = await WebcontentConverter.contentToImage(content: content);
     var service = ESCPrinterService(bytes);
     var data = await service.getBytes(paperSize: PaperSize.mm58);

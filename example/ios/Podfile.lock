@@ -1,5 +1,12 @@
 PODS:
   - Flutter (1.0.0)
+  - flutter_blue (0.0.1):
+    - Flutter
+    - flutter_blue/Protos (= 0.0.1)
+  - flutter_blue/Protos (0.0.1):
+    - Flutter
+    - Protobuf (~> 3.11.4)
+  - Protobuf (3.11.4)
   - webcontent_converter (0.0.1):
     - Flutter
   - wifi (0.0.1):
@@ -7,12 +14,19 @@ PODS:
 
 DEPENDENCIES:
   - Flutter (from `Flutter`)
+  - flutter_blue (from `.symlinks/plugins/flutter_blue/ios`)
   - webcontent_converter (from `.symlinks/plugins/webcontent_converter/ios`)
   - wifi (from `.symlinks/plugins/wifi/ios`)
+
+SPEC REPOS:
+  trunk:
+    - Protobuf
 
 EXTERNAL SOURCES:
   Flutter:
     :path: Flutter
+  flutter_blue:
+    :path: ".symlinks/plugins/flutter_blue/ios"
   webcontent_converter:
     :path: ".symlinks/plugins/webcontent_converter/ios"
   wifi:
@@ -20,6 +34,8 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Flutter: 434fef37c0980e73bb6479ef766c45957d4b510c
+  flutter_blue: eeb381dc4727a0954dede73515f683865494b370
+  Protobuf: 176220c526ad8bd09ab1fb40a978eac3fef665f7
   webcontent_converter: baa47c5fc5a9e8d703897a0b128f969c58fd2c7f
   wifi: d7d77c94109e36c4175d845f0a5964eadba71060
 

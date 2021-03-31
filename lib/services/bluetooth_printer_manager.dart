@@ -1,15 +1,21 @@
+import 'dart:io';
 import 'dart:typed_data';
-import 'package:blue_thermal_printer/blue_thermal_printer.dart';
+import 'package:blue_thermal_printer/blue_thermal_printer.dart' as themal;
+import 'package:flutter_blue/flutter_blue.dart' as fblue;
+import 'package:flutter_blue/gen/flutterblue.pb.dart' as proto;
 import 'package:esc_pos_utils_plus/esc_pos_utils.dart';
 import 'package:pos_printer_manager/enums/connection_response.dart';
 import 'package:pos_printer_manager/models/bluetooth_printer.dart';
 import 'package:pos_printer_manager/models/pos_printer.dart';
+import 'bluetooth_service.dart';
 import 'printer_manager.dart';
 
 /// Bluetooth Printer
 class BluetoothPrinterManager extends PrinterManager {
   Generator generator;
-  BlueThermalPrinter bluetooth = BlueThermalPrinter.instance;
+  themal.BlueThermalPrinter bluetooth = themal.BlueThermalPrinter.instance;
+  fblue.FlutterBlue flutterBlue = fblue.FlutterBlue.instance;
+  fblue.BluetoothDevice fbdevice;
 
   BluetoothPrinterManager(
     POSPrinter printer,
@@ -33,8 +39,19 @@ class BluetoothPrinterManager extends PrinterManager {
   Future<ConnectionResponse> connect(
       {Duration timeout: const Duration(seconds: 5)}) async {
     try {
-      var _device = BluetoothDevice(printer.name, printer.address);
-      await bluetooth.connect(_device);
+      if (Platform.isIOS) {
+        fbdevice = fblue.BluetoothDevice.fromProto(proto.BluetoothDevice(
+            name: printer.name,
+            remoteId: printer.address,
+            type: proto.BluetoothDevice_Type.valueOf(printer.type)));
+        var connected = await flutterBlue.connectedDevices;
+        var index = connected?.indexWhere((e) => e.id == fbdevice.id);
+        if (index < 0) await fbdevice.connect();
+      } else if (Platform.isAndroid) {
+        var device = themal.BluetoothDevice(printer.name, printer.address);
+        await bluetooth.connect(device);
+      }
+
       this.isConnected = true;
       this.printer.connected = true;
       return Future<ConnectionResponse>.value(ConnectionResponse.success);
@@ -47,7 +64,7 @@ class BluetoothPrinterManager extends PrinterManager {
 
   /// [discover] let you explore all bluetooth printer nearby your device
   static Future<List<BluetoothPrinter>> discover() async {
-    var results = await BlueThermalPrinter.instance.getBondedDevices();
+    var results = await BluetoothService.findBluetoothDevice();
     return [
       ...results
           .map((e) => BluetoothPrinter(
@@ -66,8 +83,16 @@ class BluetoothPrinterManager extends PrinterManager {
       if (!isConnected) {
         await connect();
       }
-      bluetooth.writeBytes(Uint8List.fromList(data));
-      await disconnect();
+      if (Platform.isAndroid) {
+        bluetooth.writeBytes(Uint8List.fromList(data));
+        await disconnect();
+      } else if (Platform.isIOS) {
+        var services = (await fbdevice.discoverServices());
+        var service = services.firstWhere((e) => e.isPrimary);
+        var charactor =
+            service.characteristics.firstWhere((e) => e.properties.write);
+        await charactor?.write(data, withoutResponse: true);
+      }
     } catch (e) {
       print("Error : $e");
     }
@@ -75,8 +100,14 @@ class BluetoothPrinterManager extends PrinterManager {
 
   /// [timeout]: milliseconds to wait after closing the socket
   Future<ConnectionResponse> disconnect({Duration timeout}) async {
-    await bluetooth?.disconnect();
-    this.isConnected = false;
+    if (Platform.isAndroid) {
+      await bluetooth?.disconnect();
+      this.isConnected = false;
+    } else if (Platform.isIOS) {
+      await fbdevice.disconnect();
+      this.isConnected = false;
+    }
+
     if (timeout != null) {
       await Future.delayed(timeout, () => null);
     }
