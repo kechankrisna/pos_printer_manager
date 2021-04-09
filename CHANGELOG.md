@@ -1,5 +1,9 @@
 ## 0.0.3+1
 
+* upgrade esc_pos_utils_plus
+
+## 0.0.3+1
+
 * hotfix ConntectionType to ConnectionType
 
 ## 0.0.3
