@@ -11,7 +11,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  webcontent_converter: ^0.0.2  
+  webcontent_converter: ^0.0.4 
 
   pos_printer_manager:
     # When depending on this package from a real application you should use:

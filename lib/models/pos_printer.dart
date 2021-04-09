@@ -8,7 +8,7 @@ class POSPrinter {
   bool connected;
   int type;
   BluetoothPrinterType get bluetoothType => type.printerType();
-  ConntectionType conntectionType;
+  ConnectionType connectionType;
 
   factory POSPrinter.instance() => POSPrinter();
 
@@ -18,7 +18,7 @@ class POSPrinter {
     this.address,
     this.connected: false,
     this.type: 0,
-    this.conntectionType,
+    this.connectionType,
   });
 }
 

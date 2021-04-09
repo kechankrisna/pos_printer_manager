@@ -1,3 +1,7 @@
+## 0.0.3+1
+
+* hotfix ConntectionType to ConnectionType
+
 ## 0.0.3
 
 * ios bluetooth ble support
