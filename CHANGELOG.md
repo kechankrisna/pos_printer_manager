@@ -1,3 +1,7 @@
+## 0.0.3+4
+
+* hotfix
+
 ## 0.0.3+3
 
 * add isDisconnect parameter to writeBytes 
