@@ -14,6 +14,7 @@ class _NetWorkPrinterScreenState extends State<NetWorkPrinterScreen> {
   bool _isLoading = false;
   List<NetWorkPrinter> _printers = [];
   NetworkPrinterManager _manager;
+  List<int> _data = [];
 
   @override
   Widget build(BuildContext context) {
@@ -68,13 +69,17 @@ class _NetWorkPrinterScreenState extends State<NetWorkPrinterScreen> {
   }
 
   _startPrinter() async {
-    final content = Demo.getShortReceiptContent();
-    var bytes = await WebcontentConverter.contentToImage(content: content);
-    var service = ESCPrinterService(bytes);
-    var data = await service.getBytes();
+    if (_data.isEmpty) {
+      final content = Demo.getShortReceiptContent();
+      var bytes = await WebcontentConverter.contentToImage(content: content);
+      var service = ESCPrinterService(bytes);
+      var data = await service.getBytes();
+      if (mounted) setState(() => _data = data);
+    }
+
     if (_manager != null) {
       print("isConnected ${_manager.isConnected}");
-      _manager.writeBytes(data);
+      _manager.writeBytes(_data, isDisconnect: false);
     }
   }
 }

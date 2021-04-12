@@ -60,14 +60,16 @@ class NetworkPrinterManager extends PrinterManager {
   }
 
   /// [writeBytes] let you write raw list int data into socket
-  writeBytes(List<int> data) async {
+  writeBytes(List<int> data, {bool isDisconnect: true}) async {
     try {
       if (!isConnected) {
         await connect();
       }
       print(this.socket);
       this.socket.add(data);
-      await disconnect();
+      if (isDisconnect) {
+        await disconnect();
+      }
     } catch (e) {
       print("Error : $e");
     }

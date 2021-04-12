@@ -1,3 +1,7 @@
+## 0.0.3+3
+
+* add isDisconnect parameter to writeBytes 
+
 ## 0.0.3+2
 
 * upgrade esc_pos_utils_plus
@@ -9,7 +13,6 @@
 ## 0.0.3
 
 * ios bluetooth ble support
-
 
 ## 0.0.2+1
 

@@ -78,14 +78,16 @@ class BluetoothPrinterManager extends PrinterManager {
   }
 
   /// [writeBytes] let you write raw list int data into socket
-  writeBytes(List<int> data) async {
+  writeBytes(List<int> data, {bool isDisconnect: true}) async {
     try {
       if (!isConnected) {
         await connect();
       }
       if (Platform.isAndroid) {
         bluetooth.writeBytes(Uint8List.fromList(data));
-        await disconnect();
+        if (isDisconnect) {
+          await disconnect();
+        }
       } else if (Platform.isIOS) {
         var services = (await fbdevice.discoverServices());
         var service = services.firstWhere((e) => e.isPrimary);
