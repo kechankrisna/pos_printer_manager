@@ -1,4 +1,4 @@
-import 'package:ping_discover_network/ping_discover_network.dart';
+import 'package:pos_printer_manager/helpers/network_analyzer.dart';
 import 'package:wifi/wifi.dart';
 
 class NetworkService {
