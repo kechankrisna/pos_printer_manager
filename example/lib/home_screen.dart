@@ -32,7 +32,7 @@ class _HomeScreenState extends State<HomeScreen> {
             },
           ),
           ListTile(
-            title: Text("USB Printer (desktop:windows)"),
+            title: Text("USB Printer (desktop:windows, android)"),
             onTap: () {
               Navigator.push(context,
                   MaterialPageRoute(builder: (_) => USBPrinterScreen()));
