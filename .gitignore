@@ -3,5 +3,8 @@
 
 .packages
 .pub/
+.local-chromium
+.local-chromium/
+/example/.local-chromium/
 
 build/
