@@ -1,4 +1,9 @@
+## 0.0.4+1
+
+* android support usb flutter_usb_printer
+
 ## 0.0.4
+
 * windows support usb using win32
 
 ## 0.0.3+4

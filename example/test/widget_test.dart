@@ -18,10 +18,22 @@ void main() {
     // Verify that platform version is retrieved.
     expect(
       find.byWidgetPredicate(
-        (Widget widget) => widget is Text &&
-                           widget.data.startsWith('Running on:'),
+        (Widget widget) =>
+            widget is Text && widget.data.startsWith('Running on:'),
       ),
       findsOneWidget,
     );
+  });
+
+  test("math", () {
+    int a = 5;
+    int b = 2;
+    int x = a ~/ b;
+    int check = a % b;
+    print("check $check");
+    if (check > 0) {
+      x += 1;
+    }
+    expect(3, x);
   });
 }

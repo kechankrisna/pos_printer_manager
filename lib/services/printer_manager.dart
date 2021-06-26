@@ -8,8 +8,9 @@ abstract class PrinterManager {
   Generator generator;
   bool isConnected = false;
   String address;
-  String vendorId;
-  String productId;
+  int vendorId;
+  int productId;
+  int deviceId;
   int port = 9100;
   int spaceBetweenRows = 5;
   POSPrinter printer;

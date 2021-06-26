@@ -1,6 +1,8 @@
 import 'dart:ffi';
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:ffi/ffi.dart';
+import 'package:flutter_usb_printer/flutter_usb_printer.dart';
 import 'package:pos_printer_manager/models/usb_printer.dart';
 import 'package:win32/win32.dart';
 import 'package:pos_printer_manager/enums/connection_response.dart';
@@ -13,6 +15,9 @@ import 'usb_service.dart';
 /// USB Printer
 class USBPrinterManager extends PrinterManager {
   Generator generator;
+
+  /// usb_serial
+  var usbPrinter = FlutterUsbPrinter();
 
   /// [win32]
   Pointer<IntPtr> phPrinter = calloc<HANDLE>();
@@ -35,6 +40,7 @@ class USBPrinterManager extends PrinterManager {
     super.printer = printer;
     super.address = printer.address;
     super.productId = printer.productId;
+    super.deviceId = printer.deviceId;
     super.vendorId = printer.vendorId;
     super.paperSize = paperSize;
     super.profile = profile;
@@ -73,6 +79,18 @@ class USBPrinterManager extends PrinterManager {
         this.printer.connected = false;
         return Future<ConnectionResponse>.value(ConnectionResponse.timeout);
       }
+    } else if (Platform.isAndroid) {
+      var usbDevice = await usbPrinter.connect(vendorId, productId);
+      if (usbDevice != null) {
+        print("vendorId $vendorId, productId $productId ");
+        this.isConnected = true;
+        this.printer.connected = true;
+        return Future<ConnectionResponse>.value(ConnectionResponse.success);
+      } else {
+        this.isConnected = false;
+        this.printer.connected = false;
+        return Future<ConnectionResponse>.value(ConnectionResponse.timeout);
+      }
     } else {
       return Future<ConnectionResponse>.value(ConnectionResponse.timeout);
     }
@@ -95,6 +113,15 @@ class USBPrinterManager extends PrinterManager {
       free(docInfo);
       free(dwBytesWritten);
       this.isConnected = false;
+      this.printer.connected = false;
+      if (timeout != null) {
+        await Future.delayed(timeout, () => null);
+      }
+      return ConnectionResponse.success;
+    } else if (Platform.isAndroid) {
+      await usbPrinter.close();
+      this.isConnected = false;
+      this.printer.connected = false;
       if (timeout != null) {
         await Future.delayed(timeout, () => null);
       }
@@ -159,6 +186,24 @@ class USBPrinterManager extends PrinterManager {
       free(pDataType);
       free(docInfo);
       free(dwBytesWritten);
+    } else if (Platform.isAndroid) {
+      PosPrinterManager.logger("start write");
+      var bytes = Uint8List.fromList(data);
+      int max = 16384;
+
+      /// maxChunk limit on android
+      var datas = bytes.chunkBy(max);
+      await Future.forEach(datas, (data) async => await usbPrinter.write(data));
+      PosPrinterManager.logger("end write bytes.length${bytes.length}");
+      if (isDisconnect) {
+        try {
+          await usbPrinter.close();
+          this.isConnected = false;
+          this.printer.connected = false;
+        } catch (e) {
+          PosPrinterManager.logger.error("Error : $e");
+        }
+      }
     }
   }
 }
@@ -169,6 +214,31 @@ extension on List<int> {
     final result = calloc<Uint8>(this.length);
     final nativeString = result.asTypedList(this.length);
     nativeString.setAll(0, this);
+    return result;
+  }
+
+  List<List<int>> chunkBy(num value) {
+    List<List<int>> result = [];
+    final size = this.length;
+    int max = size ~/ value;
+    int check = size % value;
+    if (check > 0) {
+      max += 1;
+    }
+    if (size <= value) {
+      result = [this];
+    } else {
+      for (var i = 0; i < max; i++) {
+        int startIndex = value * i;
+        int endIndex = value * (i + 1);
+        if (endIndex > size) {
+          endIndex = size;
+        }
+        var sub = this.sublist(startIndex, endIndex);
+        print("startIndex=$startIndex || endIndex=$endIndex");
+        result.add(sub);
+      }
+    }
     return result;
   }
 }
