@@ -2,9 +2,7 @@
 // specifying the `--platforms` flag. A plugin project supports no platforms is generated.
 // To add platforms, run `flutter create -t plugin --platforms <platforms> .` under the same
 // directory. You can also find a detailed instruction on how to add platforms in the `pubspec.yaml` at https://flutter.dev/docs/development/packages-and-plugins/developing-packages#plugin-platforms.
-
-import 'dart:async';
-import 'package:flutter/services.dart';
+import 'package:easy_logger/easy_logger.dart';
 export 'models/network_printer.dart';
 export 'models/bluetooth_printer.dart';
 export 'services/bluetooth_printer_manager.dart';
@@ -15,12 +13,25 @@ export 'enums/connection_type.dart';
 export 'package:esc_pos_utils_plus/esc_pos_utils.dart';
 
 
-class PosPrinterManager {
-  static const MethodChannel _channel =
-      const MethodChannel('pos_printer_manager');
 
-  static Future<String> get platformVersion async {
-    final String version = await _channel.invokeMethod('getPlatformVersion');
-    return version;
-  }
+class PosPrinterManager {
+  // static const MethodChannel _channel =
+  //     const MethodChannel('pos_printer_manager');
+
+  // static Future<String> get platformVersion async {
+  //   final String version = await _channel.invokeMethod('getPlatformVersion');
+  //   return version;
+  // }
+
+   static EasyLogger logger = EasyLogger(
+    name: 'pos_printer_manager',
+    defaultLevel: LevelMessages.debug,
+    enableBuildModes: [BuildMode.debug, BuildMode.profile, BuildMode.release],
+    enableLevels: [
+      LevelMessages.debug,
+      LevelMessages.info,
+      LevelMessages.error,
+      LevelMessages.warning
+    ],
+  );
 }

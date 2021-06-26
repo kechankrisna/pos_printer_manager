@@ -113,4 +113,4 @@ Thank to :
 - [blue_thermal_printer](https://pub.dev/packages/blue_thermal_printer)
 - [esc_pos_utils](https://pub.dev/packages/esc_pos_utils)
 - [ping_discover_network](https://pub.dev/packages/ping_discover_network)
-- [wifi](https://pub.dev/packages/wifi)
+- [network_info_plus](https://pub.dev/packages/network_info_plus)
