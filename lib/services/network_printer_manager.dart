@@ -3,6 +3,7 @@ import 'package:esc_pos_utils_plus/esc_pos_utils.dart';
 import 'package:pos_printer_manager/enums/connection_response.dart';
 import 'package:pos_printer_manager/models/network_printer.dart';
 import 'package:pos_printer_manager/models/pos_printer.dart';
+import 'package:pos_printer_manager/pos_printer_manager.dart';
 import 'network_service.dart';
 import 'printer_manager.dart';
 
@@ -71,7 +72,7 @@ class NetworkPrinterManager extends PrinterManager {
         await disconnect();
       }
     } catch (e) {
-      print("Error : $e");
+      PosPrinterManager.logger.error("Error : $e");
     }
   }
 

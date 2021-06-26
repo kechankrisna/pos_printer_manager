@@ -1,27 +1,27 @@
 import 'package:flutter/material.dart';
-import 'package:pos_printer_manager/models/network_printer.dart';
+import 'package:pos_printer_manager/models/usb_printer.dart';
 import 'package:pos_printer_manager/pos_printer_manager.dart';
 import 'package:pos_printer_manager_example/webview_helper.dart';
 import 'package:webcontent_converter/webcontent_converter.dart';
 import 'demo.dart';
 import 'service.dart';
 
-class NetWorkPrinterScreen extends StatefulWidget {
+class USBPrinterScreen extends StatefulWidget {
   @override
-  _NetWorkPrinterScreenState createState() => _NetWorkPrinterScreenState();
+  _USBPrinterScreenState createState() => _USBPrinterScreenState();
 }
 
-class _NetWorkPrinterScreenState extends State<NetWorkPrinterScreen> {
+class _USBPrinterScreenState extends State<USBPrinterScreen> {
   bool _isLoading = false;
-  List<NetWorkPrinter> _printers = [];
-  NetworkPrinterManager _manager;
+  List<USBPrinter> _printers = [];
+  USBPrinterManager _manager;
   List<int> _data = [];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Network Printer Screen"),
+        title: Text("USB Printer Screen"),
       ),
       body: ListView(
         children: [
@@ -29,7 +29,7 @@ class _NetWorkPrinterScreenState extends State<NetWorkPrinterScreen> {
               .map((printer) => ListTile(
                     title: Text("${printer.name}"),
                     subtitle: Text("${printer.address}"),
-                    leading: Icon(Icons.cable),
+                    leading: Icon(Icons.usb),
                     onTap: () => _connect(printer),
                     onLongPress: () {
                       _startPrinter();
@@ -51,17 +51,17 @@ class _NetWorkPrinterScreenState extends State<NetWorkPrinterScreen> {
       _isLoading = true;
       _printers = [];
     });
-    var printers = await NetworkPrinterManager.discover();
+    var printers = await USBPrinterManager.discover();
     setState(() {
       _isLoading = false;
       _printers = printers;
     });
   }
 
-  _connect(NetWorkPrinter printer) async {
+  _connect(USBPrinter printer) async {
     var paperSize = PaperSize.mm80;
     var profile = await CapabilityProfile.load();
-    var manager = NetworkPrinterManager(printer, paperSize, profile);
+    var manager = USBPrinterManager(printer, paperSize, profile);
     await manager.connect();
     setState(() {
       _manager = manager;

@@ -7,12 +7,14 @@ This plugin allow developer to print to esc printer both wireless or bluetooth (
 - Bluetooth Printer
 
 ```
-_scan() async {
+  _scan() async {
+    print("scan");
     setState(() {
       _isLoading = true;
       _printers = [];
     });
     var printers = await BluetoothPrinterManager.discover();
+    print(printers);
     setState(() {
       _isLoading = false;
       _printers = printers;
@@ -32,20 +34,21 @@ _scan() async {
   }
 
   _startPrinter() async {
-    final content = Demo.getReceiptContent();
+    final content = Demo.getShortReceiptContent();
     var bytes = await WebcontentConverter.contentToImage(content: content);
     var service = ESCPrinterService(bytes);
     var data = await service.getBytes(paperSize: PaperSize.mm58);
     if (_manager != null) {
-      _manager.writeBytes(data);
+      print("isConnected ${_manager.isConnected}");
+      _manager.writeBytes(data, isDisconnect: false);
     }
   }
 ```
 
-- Wireless Printer
+- Network Printer
 
 ```
-_scan() async {
+  _scan() async {
     setState(() {
       _isLoading = true;
       _printers = [];
@@ -69,44 +72,86 @@ _scan() async {
   }
 
   _startPrinter() async {
-    final content = Demo.getReceiptContent();
-    var bytes = await WebcontentConverter.contentToImage(content: content);
-    var service = ESCPrinterService(bytes);
-    var data = await service.getBytes();
+    if (_data.isEmpty) {
+      final content = Demo.getShortReceiptContent();
+      var bytes = await WebcontentConverter.contentToImage(
+        content: content,
+        executablePath: WebViewHelper.executablePath(),
+      );
+      var service = ESCPrinterService(bytes);
+      var data = await service.getBytes();
+      if (mounted) setState(() => _data = data);
+    }
+
     if (_manager != null) {
-      _manager.writeBytes(data);
+      print("isConnected ${_manager.isConnected}");
+      _manager.writeBytes(_data, isDisconnect: false);
     }
   }
 ```
 
+- USB Printer
+```
+_scan() async {
+    setState(() {
+      _isLoading = true;
+      _printers = [];
+    });
+    var printers = await USBPrinterManager.discover();
+    setState(() {
+      _isLoading = false;
+      _printers = printers;
+    });
+  }
+
+  _connect(USBPrinter printer) async {
+    var paperSize = PaperSize.mm80;
+    var profile = await CapabilityProfile.load();
+    var manager = USBPrinterManager(printer, paperSize, profile);
+    await manager.connect();
+    setState(() {
+      _manager = manager;
+      printer.connected = true;
+    });
+  }
+
+  _startPrinter() async {
+    if (_data.isEmpty) {
+      final content = Demo.getShortReceiptContent();
+      var bytes = await WebcontentConverter.contentToImage(
+        content: content,
+        executablePath: WebViewHelper.executablePath(),
+      );
+      var service = ESCPrinterService(bytes);
+      var data = await service.getBytes();
+      if (mounted) setState(() => _data = data);
+    }
+
+    if (_manager != null) {
+      print("isConnected ${_manager.isConnected}");
+      _manager.writeBytes(_data, isDisconnect: false);
+    }
+  }
+```
 
 ## Supports
 
-| Device | Wireless | Bluetooth | USB |
+| Device | Network | Bluetooth | USB |
 | --- | --- | --- | --- |
 | Android | &check; | &check; | &cross; |
 | IOS | &check; | &check; | &cross; |
 | Macos | &check; | &cross; | &cross; |
-| Desktop | &check; | &cross; | &cross; |
+| Windows | &check; | &cross; | &check; |
 | Linux | &check; | &cross; | &cross; |
 
 *** USB: will be the set to the next plan of update
 
 ## Getting Started
+```
+  flutter pub add pos_printer_manager
+```
 
 
-This project is a starting point for a Flutter
-[plug-in package](https://flutter.dev/developing-packages/),
-a specialized package that includes platform-specific implementation code for
-Android and/or iOS.
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
-
-The plugin project was generated without specifying the `--platforms` flag, no platforms are currently supported.
-To add platforms, run `flutter create -t plugin --platforms <platforms> .` under the same
-directory. You can also find a detailed instruction on how to add platforms in the `pubspec.yaml` at https://flutter.dev/docs/development/packages-and-plugins/developing-packages#plugin-platforms.
 
 
 Thank to :
@@ -114,3 +159,4 @@ Thank to :
 - [esc_pos_utils](https://pub.dev/packages/esc_pos_utils)
 - [ping_discover_network](https://pub.dev/packages/ping_discover_network)
 - [network_info_plus](https://pub.dev/packages/network_info_plus)
+- [printing](https://pub.dev/packages/printing)

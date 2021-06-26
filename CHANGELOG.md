@@ -1,3 +1,6 @@
+## 0.0.4
+* windows support usb using win32
+
 ## 0.0.3+4
 
 * hotfix

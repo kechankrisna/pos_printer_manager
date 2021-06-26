@@ -5,6 +5,8 @@ class POSPrinter {
   String id;
   String name;
   String address;
+  String vendorId;
+  String productId;
   bool connected;
   int type;
   BluetoothPrinterType get bluetoothType => type.printerType();
@@ -16,6 +18,8 @@ class POSPrinter {
     this.id,
     this.name,
     this.address,
+    this.vendorId,
+    this.productId,
     this.connected: false,
     this.type: 0,
     this.connectionType,
