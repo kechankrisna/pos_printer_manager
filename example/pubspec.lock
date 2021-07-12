@@ -156,9 +156,9 @@ packages:
   flutter_blue:
     dependency: transitive
     description:
-      name: flutter_blue
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: "../../flutter_blue"
+      relative: true
+    source: path
     version: "0.8.0"
   flutter_test:
     dependency: "direct dev"

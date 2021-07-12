@@ -6,17 +6,20 @@ PODS:
   - flutter_blue/Protos (0.0.1):
     - Flutter
     - Protobuf (~> 3.11.4)
+  - network_info_plus (0.0.1):
+    - Flutter
+  - printing (1.0.0):
+    - Flutter
   - Protobuf (3.11.4)
   - webcontent_converter (0.0.1):
-    - Flutter
-  - wifi (0.0.1):
     - Flutter
 
 DEPENDENCIES:
   - Flutter (from `Flutter`)
   - flutter_blue (from `.symlinks/plugins/flutter_blue/ios`)
+  - network_info_plus (from `.symlinks/plugins/network_info_plus/ios`)
+  - printing (from `.symlinks/plugins/printing/ios`)
   - webcontent_converter (from `.symlinks/plugins/webcontent_converter/ios`)
-  - wifi (from `.symlinks/plugins/wifi/ios`)
 
 SPEC REPOS:
   trunk:
@@ -27,17 +30,20 @@ EXTERNAL SOURCES:
     :path: Flutter
   flutter_blue:
     :path: ".symlinks/plugins/flutter_blue/ios"
+  network_info_plus:
+    :path: ".symlinks/plugins/network_info_plus/ios"
+  printing:
+    :path: ".symlinks/plugins/printing/ios"
   webcontent_converter:
     :path: ".symlinks/plugins/webcontent_converter/ios"
-  wifi:
-    :path: ".symlinks/plugins/wifi/ios"
 
 SPEC CHECKSUMS:
   Flutter: 434fef37c0980e73bb6479ef766c45957d4b510c
   flutter_blue: eeb381dc4727a0954dede73515f683865494b370
+  network_info_plus: b78876159360f5580608c2cea620d6ceffabd0ad
+  printing: eafa00acb682c0ca029d4d98d0798f55a1e27102
   Protobuf: 176220c526ad8bd09ab1fb40a978eac3fef665f7
   webcontent_converter: baa47c5fc5a9e8d703897a0b128f969c58fd2c7f
-  wifi: d7d77c94109e36c4175d845f0a5964eadba71060
 
 PODFILE CHECKSUM: aafe91acc616949ddb318b77800a7f51bffa2a4c
 
