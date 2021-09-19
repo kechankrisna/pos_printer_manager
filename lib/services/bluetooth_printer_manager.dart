@@ -78,7 +78,9 @@ class BluetoothPrinterManager extends PrinterManager {
   }
 
   /// [writeBytes] let you write raw list int data into socket
-  writeBytes(List<int> data, {bool isDisconnect: true}) async {
+  @override
+  Future<ConnectionResponse> writeBytes(List<int> data,
+      {bool isDisconnect: true}) async {
     try {
       if (!isConnected) {
         await connect();
@@ -88,15 +90,19 @@ class BluetoothPrinterManager extends PrinterManager {
         if (isDisconnect) {
           await disconnect();
         }
+        return ConnectionResponse.success;
       } else if (Platform.isIOS) {
         var services = (await fbdevice.discoverServices());
         var service = services.firstWhere((e) => e.isPrimary);
         var charactor =
             service.characteristics.firstWhere((e) => e.properties.write);
         await charactor?.write(data, withoutResponse: true);
+        return ConnectionResponse.success;
       }
+      return ConnectionResponse.unsupport;
     } catch (e) {
       print("Error : $e");
+      return ConnectionResponse.unknown;
     }
   }
 

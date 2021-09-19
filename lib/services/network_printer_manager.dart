@@ -61,7 +61,9 @@ class NetworkPrinterManager extends PrinterManager {
   }
 
   /// [writeBytes] let you write raw list int data into socket
-  writeBytes(List<int> data, {bool isDisconnect: true}) async {
+  @override
+  Future<ConnectionResponse> writeBytes(List<int> data,
+      {bool isDisconnect: true}) async {
     try {
       if (!isConnected) {
         await connect();
@@ -71,8 +73,10 @@ class NetworkPrinterManager extends PrinterManager {
       if (isDisconnect) {
         await disconnect();
       }
+      return ConnectionResponse.success;
     } catch (e) {
       PosPrinterManager.logger.error("Error : $e");
+      return ConnectionResponse.printerNotConnected;
     }
   }
 

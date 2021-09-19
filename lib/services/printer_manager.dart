@@ -17,7 +17,7 @@ abstract class PrinterManager {
 
   Future<ConnectionResponse> connect({Duration timeout});
 
-  writeBytes(List<int> data, {bool isDisconnect: true});
+  Future<ConnectionResponse> writeBytes(List<int> data, {bool isDisconnect: true});
 
   Future<ConnectionResponse> disconnect({Duration timeout});
 

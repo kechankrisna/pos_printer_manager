@@ -131,7 +131,8 @@ class USBPrinterManager extends PrinterManager {
   }
 
   @override
-  writeBytes(List<int> data, {bool isDisconnect = true}) async {
+  Future<ConnectionResponse> writeBytes(List<int> data,
+      {bool isDisconnect = true}) async {
     if (Platform.isWindows) {
       try {
         if (!isConnected) {
@@ -141,13 +142,13 @@ class USBPrinterManager extends PrinterManager {
         final dwJob = StartDocPrinter(hPrinter, 1, docInfo);
         if (dwJob == 0) {
           ClosePrinter(hPrinter);
-          return false;
+          return ConnectionResponse.ticketEmpty;
         }
         // Start a page.
         if (StartPagePrinter(hPrinter) == 0) {
           EndDocPrinter(hPrinter);
           ClosePrinter(hPrinter);
-          return false;
+          return ConnectionResponse.ticketEmpty;
         }
 
         // Send the data to the printer.
@@ -157,28 +158,30 @@ class USBPrinterManager extends PrinterManager {
           EndPagePrinter(hPrinter);
           EndDocPrinter(hPrinter);
           ClosePrinter(hPrinter);
-          return false;
+          return ConnectionResponse.ticketEmpty;
         }
         // End the page.
         if (EndPagePrinter(hPrinter) == 0) {
           EndDocPrinter(hPrinter);
           ClosePrinter(hPrinter);
-          return false;
+          return ConnectionResponse.ticketEmpty;
         }
         // Inform the spooler that the document is ending.
         if (EndDocPrinter(hPrinter) == 0) {
           ClosePrinter(hPrinter);
-          return false;
+          return ConnectionResponse.ticketEmpty;
         }
         if (isDisconnect) {
           // Tidy up the printer handle.
           ClosePrinter(hPrinter);
           // Check to see if correct number of bytes were written.
-          if (dwBytesWritten.value != dwCount) return false;
-          return true;
+          if (dwBytesWritten.value != dwCount)
+            return ConnectionResponse.printerNotConnected;
+          return ConnectionResponse.success;
         }
       } catch (e) {
         PosPrinterManager.logger.error("Error : $e");
+        return ConnectionResponse.unknown;
       }
 
       free(phPrinter);
@@ -186,6 +189,7 @@ class USBPrinterManager extends PrinterManager {
       free(pDataType);
       free(docInfo);
       free(dwBytesWritten);
+      return ConnectionResponse.success;
     } else if (Platform.isAndroid) {
       PosPrinterManager.logger("start write");
       var bytes = Uint8List.fromList(data);
@@ -195,6 +199,7 @@ class USBPrinterManager extends PrinterManager {
       var datas = bytes.chunkBy(max);
       await Future.forEach(datas, (data) async => await usbPrinter.write(data));
       PosPrinterManager.logger("end write bytes.length${bytes.length}");
+
       if (isDisconnect) {
         try {
           await usbPrinter.close();
@@ -202,8 +207,12 @@ class USBPrinterManager extends PrinterManager {
           this.printer.connected = false;
         } catch (e) {
           PosPrinterManager.logger.error("Error : $e");
+          return ConnectionResponse.unknown;
         }
       }
+      return ConnectionResponse.success;
+    } else {
+      return ConnectionResponse.unsupport;
     }
   }
 }

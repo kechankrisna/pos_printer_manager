@@ -7,6 +7,9 @@ class ConnectionResponse {
   static const ticketEmpty = ConnectionResponse._internal(4);
   static const printInProgress = ConnectionResponse._internal(5);
   static const scanInProgress = ConnectionResponse._internal(6);
+  static const printerNotConnected = ConnectionResponse._internal(7);
+  static const unknown = ConnectionResponse._internal(8);
+  static const unsupport = ConnectionResponse._internal(9);
 
   String get msg {
     if (value == ConnectionResponse.success.value) {
@@ -15,12 +18,18 @@ class ConnectionResponse {
       return 'Error. Printer connection timeout';
     } else if (value == ConnectionResponse.printerNotSelected.value) {
       return 'Error. Printer not selected';
+    } else if (value == ConnectionResponse.printerNotConnected.value) {
+      return 'Error. Printer not connected';
     } else if (value == ConnectionResponse.ticketEmpty.value) {
       return 'Error. Ticket is empty';
     } else if (value == ConnectionResponse.printInProgress.value) {
       return 'Error. Another print in progress';
     } else if (value == ConnectionResponse.scanInProgress.value) {
       return 'Error. Printer scanning in progress';
+    } else if (value == ConnectionResponse.unknown.value) {
+      return 'Unknown error';
+    }else if (value == ConnectionResponse.unsupport.value) {
+      return 'Unsupport platform';
     } else {
       return 'Unknown error';
     }
