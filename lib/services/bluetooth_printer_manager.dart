@@ -86,11 +86,14 @@ class BluetoothPrinterManager extends PrinterManager {
         await connect();
       }
       if (Platform.isAndroid) {
-        bluetooth.writeBytes(Uint8List.fromList(data));
-        if (isDisconnect) {
-          await disconnect();
+        if ((await bluetooth.isConnected)) {
+          bluetooth.writeBytes(Uint8List.fromList(data));
+          if (isDisconnect) {
+            await disconnect();
+          }
+          return ConnectionResponse.success;
         }
-        return ConnectionResponse.success;
+        return ConnectionResponse.printerNotConnected;
       } else if (Platform.isIOS) {
         var services = (await fbdevice.discoverServices());
         var service = services.firstWhere((e) => e.isPrimary);

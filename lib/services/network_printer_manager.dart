@@ -68,12 +68,15 @@ class NetworkPrinterManager extends PrinterManager {
       if (!isConnected) {
         await connect();
       }
-      print(this.socket);
-      this.socket.add(data);
-      if (isDisconnect) {
-        await disconnect();
+      if (socket?.isBroadcast == true) {
+        print(this.socket);
+        this.socket.add(data);
+        if (isDisconnect) {
+          await disconnect();
+        }
+        return ConnectionResponse.success;
       }
-      return ConnectionResponse.success;
+      return ConnectionResponse.printerNotConnected;
     } catch (e) {
       PosPrinterManager.logger.error("Error : $e");
       return ConnectionResponse.printerNotConnected;
