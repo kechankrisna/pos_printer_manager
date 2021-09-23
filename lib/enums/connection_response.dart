@@ -10,6 +10,7 @@ class ConnectionResponse {
   static const printerNotConnected = ConnectionResponse._internal(7);
   static const unknown = ConnectionResponse._internal(8);
   static const unsupport = ConnectionResponse._internal(9);
+  static const printerNotWritable = ConnectionResponse._internal(10);
 
   String get msg {
     if (value == ConnectionResponse.success.value) {
@@ -28,8 +29,10 @@ class ConnectionResponse {
       return 'Error. Printer scanning in progress';
     } else if (value == ConnectionResponse.unknown.value) {
       return 'Unknown error';
-    }else if (value == ConnectionResponse.unsupport.value) {
+    } else if (value == ConnectionResponse.unsupport.value) {
       return 'Unsupport platform';
+    } else if (value == ConnectionResponse.printerNotWritable.value) {
+      return 'Printer not writable';
     } else {
       return 'Unknown error';
     }

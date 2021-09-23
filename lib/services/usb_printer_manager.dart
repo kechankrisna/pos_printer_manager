@@ -66,14 +66,15 @@ class USBPrinterManager extends PrinterManager {
           PosPrinterManager.logger.error("can not open");
           this.isConnected = false;
           this.printer.connected = false;
+          return Future<ConnectionResponse>.value(
+              ConnectionResponse.printerNotConnected);
         } else {
           PosPrinterManager.logger.info("szPrinterName: $szPrinterName");
           this.hPrinter = phPrinter.value;
           this.isConnected = true;
           this.printer.connected = true;
+          return Future<ConnectionResponse>.value(ConnectionResponse.success);
         }
-
-        return Future<ConnectionResponse>.value(ConnectionResponse.success);
       } catch (e) {
         this.isConnected = false;
         this.printer.connected = false;
@@ -110,13 +111,16 @@ class USBPrinterManager extends PrinterManager {
       free(phPrinter);
       free(pDocName);
       free(pDataType);
-      free(docInfo);
       free(dwBytesWritten);
+      free(docInfo);
+      free(szPrinterName);
+
       this.isConnected = false;
       this.printer.connected = false;
       if (timeout != null) {
         await Future.delayed(timeout, () => null);
       }
+      PosPrinterManager.logger.error("disconnect");
       return ConnectionResponse.success;
     } else if (Platform.isAndroid) {
       await usbPrinter.close();
@@ -135,61 +139,65 @@ class USBPrinterManager extends PrinterManager {
       {bool isDisconnect = true}) async {
     if (Platform.isWindows) {
       try {
-        if (!isConnected) {
+        if (!this.isConnected) {
           await connect();
+          PosPrinterManager.logger.info("connect()");
         }
+
         // Inform the spooler the document is beginning.
         final dwJob = StartDocPrinter(hPrinter, 1, docInfo);
         if (dwJob == 0) {
+          PosPrinterManager.logger.error("dwJob == 0");
           ClosePrinter(hPrinter);
-          return ConnectionResponse.ticketEmpty;
+          return ConnectionResponse.printInProgress;
         }
         // Start a page.
         if (StartPagePrinter(hPrinter) == 0) {
+          PosPrinterManager.logger.error("StartPagePrinter == 0");
           EndDocPrinter(hPrinter);
           ClosePrinter(hPrinter);
-          return ConnectionResponse.ticketEmpty;
+          return ConnectionResponse.printerNotSelected;
         }
 
         // Send the data to the printer.
         final lpData = data.toUint8();
         dwCount = data.length;
         if (WritePrinter(hPrinter, lpData, dwCount, dwBytesWritten) == 0) {
+          PosPrinterManager.logger.error("WritePrinter == 0");
           EndPagePrinter(hPrinter);
           EndDocPrinter(hPrinter);
           ClosePrinter(hPrinter);
-          return ConnectionResponse.ticketEmpty;
+          return ConnectionResponse.printerNotWritable;
         }
+
         // End the page.
         if (EndPagePrinter(hPrinter) == 0) {
+          PosPrinterManager.logger.error("EndPagePrinter == 0");
           EndDocPrinter(hPrinter);
           ClosePrinter(hPrinter);
-          return ConnectionResponse.ticketEmpty;
         }
+
         // Inform the spooler that the document is ending.
         if (EndDocPrinter(hPrinter) == 0) {
+          PosPrinterManager.logger.error("EndDocPrinter == 0");
           ClosePrinter(hPrinter);
-          return ConnectionResponse.ticketEmpty;
         }
+
+        // Check to see if correct number of bytes were written.
+        if (dwBytesWritten.value != dwCount) {
+          PosPrinterManager.logger.error("dwBytesWritten.value != dwCount");
+        }
+
         if (isDisconnect) {
           // Tidy up the printer handle.
           ClosePrinter(hPrinter);
-          // Check to see if correct number of bytes were written.
-          if (dwBytesWritten.value != dwCount)
-            return ConnectionResponse.printerNotConnected;
-          return ConnectionResponse.success;
+          // await disconnect();
         }
+        return ConnectionResponse.success;
       } catch (e) {
         PosPrinterManager.logger.error("Error : $e");
         return ConnectionResponse.unknown;
       }
-
-      free(phPrinter);
-      free(pDocName);
-      free(pDataType);
-      free(docInfo);
-      free(dwBytesWritten);
-      return ConnectionResponse.success;
     } else if (Platform.isAndroid) {
       PosPrinterManager.logger("start write");
       var bytes = Uint8List.fromList(data);
