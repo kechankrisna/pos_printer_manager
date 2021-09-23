@@ -7,6 +7,7 @@ import 'package:esc_pos_utils_plus/esc_pos_utils.dart';
 import 'package:pos_printer_manager/enums/connection_response.dart';
 import 'package:pos_printer_manager/models/bluetooth_printer.dart';
 import 'package:pos_printer_manager/models/pos_printer.dart';
+import 'package:pos_printer_manager/pos_printer_manager.dart';
 import 'bluetooth_service.dart';
 import 'printer_manager.dart';
 
@@ -87,7 +88,9 @@ class BluetoothPrinterManager extends PrinterManager {
       }
       if (Platform.isAndroid) {
         if ((await bluetooth.isConnected)) {
-          bluetooth.writeBytes(Uint8List.fromList(data));
+          Uint8List message = Uint8List.fromList(data);
+          PosPrinterManager.logger.warning("message.length ${message.length}");
+          await bluetooth.writeBytes(message);
           if (isDisconnect) {
             await disconnect();
           }
