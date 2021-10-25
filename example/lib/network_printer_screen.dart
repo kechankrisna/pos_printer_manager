@@ -16,12 +16,30 @@ class _NetWorkPrinterScreenState extends State<NetWorkPrinterScreen> {
   List<NetWorkPrinter> _printers = [];
   NetworkPrinterManager _manager;
   List<int> _data = [];
+  String _name;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Network Printer Screen"),
+        title: Text("Network Printer Screen {printProfiles.length}"),
+        actions: [
+          PopupMenuButton(
+            itemBuilder: (_) => printProfiles
+                .map(
+                  (e) => PopupMenuItem(
+                    enabled: e["key"] != _name,
+                    child: Text("${e["key"]}"),
+                    onTap: () {
+                      setState(() {
+                        _name = e["key"];
+                      });
+                    },
+                  ),
+                )
+                .toList(),
+          )
+        ],
       ),
       body: ListView(
         children: [
@@ -70,20 +88,25 @@ class _NetWorkPrinterScreenState extends State<NetWorkPrinterScreen> {
   }
 
   _startPrinter() async {
-    if (_data.isEmpty) {
-      final content = Demo.getShortReceiptContent();
-      var bytes = await WebcontentConverter.contentToImage(
-        content: content,
-        executablePath: WebViewHelper.executablePath(),
-      );
-      var service = ESCPrinterService(bytes);
-      var data = await service.getBytes();
-      if (mounted) setState(() => _data = data);
-    }
+    // if (_data.isEmpty) {
+    final content = Demo.getShortReceiptContent();
+    var bytes = await WebcontentConverter.contentToImage(
+      content: content,
+      executablePath: WebViewHelper.executablePath(),
+    );
+    var stopwatch = Stopwatch()..start();
+    var service = ESCPrinterService(bytes);
+    var data = await service.getBytes(name: _name);
+
+    print("Start print data $_name");
+
+    if (mounted) setState(() => _data = data);
 
     if (_manager != null) {
       print("isConnected ${_manager.isConnected}");
-      _manager.writeBytes(_data, isDisconnect: false);
+      await _manager.writeBytes(_data, isDisconnect: true);
+      WebcontentConverter.logger
+          .info("completed executed in ${stopwatch.elapsed}");
     }
   }
 }

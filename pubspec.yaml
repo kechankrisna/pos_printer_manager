@@ -12,7 +12,8 @@ dependencies:
     sdk: flutter
   # flutter_blue: 
   #   path: ./../flutter_blue  
-  esc_pos_utils_plus: ^2.0.1+5
+  esc_pos_utils_plus:  ^2.0.1+6
+    # path: ./../esc_pos_utils_plus
   blue_thermal_printer: ^1.1.8          
   network_info_plus: ^1.0.2
   easy_logger: ^0.0.2

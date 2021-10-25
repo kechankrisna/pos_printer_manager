@@ -119,7 +119,7 @@ packages:
       name: esc_pos_utils_plus
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.1+5"
+    version: "2.0.1+6"
   fake_async:
     dependency: transitive
     description:

@@ -11,10 +11,14 @@ class ESCPrinterService {
 
   ESCPrinterService(this.receipt);
 
-  Future<List<int>> getBytes(
-      {PaperSize paperSize: PaperSize.mm80, CapabilityProfile profile}) async {
+  Future<List<int>> getBytes({
+    PaperSize paperSize: PaperSize.mm80,
+    CapabilityProfile profile,
+    String name = "default",
+  }) async {
     List<int> bytes = [];
-    _profile = profile ?? (await CapabilityProfile.load());
+    _profile = profile ?? (await CapabilityProfile.load(name: name));
+    print(_profile.name);
     _paperSize = paperSize;
     assert(receipt != null);
     assert(_paperSize != null);
