@@ -207,7 +207,8 @@ class USBPrinterManager extends PrinterManager {
 
       /// maxChunk limit on android
       var datas = bytes.chunkBy(max);
-      await Future.forEach(datas, (dynamic data) async => await usbPrinter.write(data));
+      await Future.forEach(
+          datas, (dynamic data) async => await usbPrinter.write(data));
       PosPrinterManager.logger("end write bytes.length${bytes.length}");
 
       if (isDisconnect) {
@@ -226,5 +227,3 @@ class USBPrinterManager extends PrinterManager {
     }
   }
 }
-
-

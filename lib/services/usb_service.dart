@@ -7,7 +7,7 @@ import 'package:printing/printing.dart';
 class USBService {
   static Future<List<USBPrinter>> findUSBPrinter() async {
     List<USBPrinter> devices = [];
-    if (Platform.isWindows) {
+    if (Platform.isWindows || Platform.isMacOS) {
       var results = await Printing.listPrinters();
       devices = [
         ...results
