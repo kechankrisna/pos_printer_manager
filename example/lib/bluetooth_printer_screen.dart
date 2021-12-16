@@ -12,7 +12,7 @@ class BluetoothPrinterScreen extends StatefulWidget {
 class _BluetoothPrinterScreenState extends State<BluetoothPrinterScreen> {
   bool _isLoading = false;
   List<BluetoothPrinter> _printers = [];
-  BluetoothPrinterManager _manager;
+  BluetoothPrinterManager? _manager;
 
   @override
   Widget build(BuildContext context) {
@@ -75,8 +75,8 @@ class _BluetoothPrinterScreenState extends State<BluetoothPrinterScreen> {
     var service = ESCPrinterService(bytes);
     var data = await service.getBytes(paperSize: PaperSize.mm58);
     if (_manager != null) {
-      print("isConnected ${_manager.isConnected}");
-      _manager.writeBytes(data, isDisconnect: false);
+      print("isConnected ${_manager!.isConnected}");
+      _manager!.writeBytes(data, isDisconnect: false);
     }
   }
 }

@@ -2,16 +2,16 @@ import 'package:pos_printer_manager/enums/bluetooth_printer_type.dart';
 import 'package:pos_printer_manager/enums/connection_type.dart';
 
 class POSPrinter {
-  String id;
-  String name;
-  String address;
-  int deviceId;
-  int vendorId;
-  int productId;
+  String? id;
+  String? name;
+  String? address;
+  int? deviceId;
+  int? vendorId;
+  int? productId;
   bool connected;
   int type;
   BluetoothPrinterType get bluetoothType => type.printerType();
-  ConnectionType connectionType;
+  ConnectionType? connectionType;
 
   factory POSPrinter.instance() => POSPrinter();
 

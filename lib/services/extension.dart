@@ -14,7 +14,7 @@ extension IntParsing on List<int> {
     List<List<int>> result = [];
     final size = this.length;
     int max = size ~/ value;
-    int check = size % value;
+    int check = size % (value as int);
     if (check > 0) {
       max += 1;
     }

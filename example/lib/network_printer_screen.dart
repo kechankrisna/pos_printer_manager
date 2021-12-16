@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:pos_printer_manager/models/network_printer.dart';
 import 'package:pos_printer_manager/pos_printer_manager.dart';
 import 'package:pos_printer_manager_example/webview_helper.dart';
 import 'package:webcontent_converter/webcontent_converter.dart';
@@ -14,15 +13,15 @@ class NetWorkPrinterScreen extends StatefulWidget {
 class _NetWorkPrinterScreenState extends State<NetWorkPrinterScreen> {
   bool _isLoading = false;
   List<NetWorkPrinter> _printers = [];
-  NetworkPrinterManager _manager;
+  NetworkPrinterManager? _manager;
   List<int> _data = [];
-  String _name;
+  String _name = "default";
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Network Printer Screen {printProfiles.length}"),
+        title: Text("Network Printer Screen ${printProfiles.length}"),
         actions: [
           PopupMenuButton(
             itemBuilder: (_) => printProfiles
@@ -103,8 +102,8 @@ class _NetWorkPrinterScreenState extends State<NetWorkPrinterScreen> {
     if (mounted) setState(() => _data = data);
 
     if (_manager != null) {
-      print("isConnected ${_manager.isConnected}");
-      await _manager.writeBytes(_data, isDisconnect: true);
+      print("isConnected ${_manager!.isConnected}");
+      await _manager!.writeBytes(_data, isDisconnect: true);
       WebcontentConverter.logger
           .info("completed executed in ${stopwatch.elapsed}");
     }

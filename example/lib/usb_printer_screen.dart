@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:pos_printer_manager/models/usb_printer.dart';
 import 'package:pos_printer_manager/pos_printer_manager.dart';
 import 'package:pos_printer_manager_example/webview_helper.dart';
 import 'package:webcontent_converter/webcontent_converter.dart';
@@ -14,7 +13,7 @@ class USBPrinterScreen extends StatefulWidget {
 class _USBPrinterScreenState extends State<USBPrinterScreen> {
   bool _isLoading = false;
   List<USBPrinter> _printers = [];
-  USBPrinterManager _manager;
+  USBPrinterManager? _manager;
   List<int> _data = [];
 
   @override
@@ -82,8 +81,8 @@ class _USBPrinterScreenState extends State<USBPrinterScreen> {
     }
 
     if (_manager != null) {
-      print("isConnected ${_manager.isConnected}");
-      _manager.writeBytes(_data, isDisconnect: false);
+      print("isConnected ${_manager!.isConnected}");
+      _manager!.writeBytes(_data, isDisconnect: false);
     }
   }
 }

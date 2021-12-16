@@ -1,11 +1,7 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:blue_thermal_printer/blue_thermal_printer.dart' as themal;
-// import 'package:flutter_blue/flutter_blue.dart' as fblue;
-// import 'package:flutter_blue/gen/flutterblue.pb.dart' as proto;
-// import 'package:esc_pos_utils_plus/esc_pos_utils.dart';
-// import 'package:pos_printer_manager/enums/connection_response.dart';
-// import 'package:pos_printer_manager/models/bluetooth_printer.dart';
 import 'package:pos_printer_manager/models/pos_printer.dart';
 import 'package:pos_printer_manager/pos_printer_manager.dart';
 import 'bluetooth_service.dart';
@@ -13,7 +9,7 @@ import 'printer_manager.dart';
 
 /// Bluetooth Printer
 class BluetoothPrinterManager extends PrinterManager {
-  Generator generator;
+  Generator? generator;
   themal.BlueThermalPrinter bluetooth = themal.BlueThermalPrinter.instance;
   // fblue.FlutterBlue flutterBlue = fblue.FlutterBlue.instance;
   // fblue.BluetoothDevice fbdevice;
@@ -25,7 +21,6 @@ class BluetoothPrinterManager extends PrinterManager {
     int spaceBetweenRows = 5,
     int port: 9100,
   }) {
-    assert(printer != null);
     super.printer = printer;
     super.address = printer.address;
     super.paperSize = paperSize;
@@ -38,7 +33,7 @@ class BluetoothPrinterManager extends PrinterManager {
 
   /// [connect] let you connect to a bluetooth printer
   Future<ConnectionResponse> connect(
-      {Duration timeout: const Duration(seconds: 5)}) async {
+      {Duration? timeout: const Duration(seconds: 5)}) async {
     try {
       // if (Platform.isIOS) {
       // fbdevice = fblue.BluetoothDevice.fromProto(proto.BluetoothDevice(
@@ -89,7 +84,7 @@ class BluetoothPrinterManager extends PrinterManager {
         await connect();
       }
       if (Platform.isAndroid || Platform.isIOS) {
-        if ((await bluetooth.isConnected)) {
+        if ((await (bluetooth.isConnected as FutureOr<bool>))) {
           Uint8List message = Uint8List.fromList(data);
           PosPrinterManager.logger.warning("message.length ${message.length}");
           await bluetooth.writeBytes(message);
@@ -116,9 +111,9 @@ class BluetoothPrinterManager extends PrinterManager {
   }
 
   /// [timeout]: milliseconds to wait after closing the socket
-  Future<ConnectionResponse> disconnect({Duration timeout}) async {
+  Future<ConnectionResponse> disconnect({Duration? timeout}) async {
     if (Platform.isAndroid || Platform.isIOS) {
-      await bluetooth?.disconnect();
+      await bluetooth.disconnect();
       this.isConnected = false;
     }
     //  else if (Platform.isIOS) {

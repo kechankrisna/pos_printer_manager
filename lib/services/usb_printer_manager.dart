@@ -4,8 +4,6 @@ import 'dart:typed_data';
 import 'package:ffi/ffi.dart';
 import 'package:flutter_usb_printer/flutter_usb_printer.dart';
 import 'package:win32/win32.dart';
-// import 'package:pos_printer_manager/models/usb_printer.dart';
-// import 'package:pos_printer_manager/enums/connection_response.dart';
 import 'package:pos_printer_manager/models/pos_printer.dart';
 import 'package:pos_printer_manager/pos_printer_manager.dart';
 import 'package:pos_printer_manager/services/printer_manager.dart';
@@ -14,20 +12,20 @@ import 'usb_service.dart';
 
 /// USB Printer
 class USBPrinterManager extends PrinterManager {
-  Generator generator;
+  Generator? generator;
 
   /// usb_serial
   var usbPrinter = FlutterUsbPrinter();
 
   /// [win32]
-  Pointer<IntPtr> phPrinter = calloc<HANDLE>();
+  Pointer<IntPtr>? phPrinter = calloc<HANDLE>();
   Pointer<Utf16> pDocName = 'My Document'.toNativeUtf16();
   Pointer<Utf16> pDataType = 'RAW'.toNativeUtf16();
-  Pointer<Uint32> dwBytesWritten = calloc<DWORD>();
-  Pointer<DOC_INFO_1> docInfo;
-  Pointer<Utf16> szPrinterName;
-  int hPrinter;
-  int dwCount;
+  Pointer<Uint32>? dwBytesWritten = calloc<DWORD>();
+  Pointer<DOC_INFO_1>? docInfo;
+  late Pointer<Utf16> szPrinterName;
+  late int hPrinter;
+  int? dwCount;
 
   USBPrinterManager(
     POSPrinter printer,
@@ -36,7 +34,6 @@ class USBPrinterManager extends PrinterManager {
     int spaceBetweenRows = 5,
     int port: 9100,
   }) {
-    assert(printer != null);
     super.printer = printer;
     super.address = printer.address;
     super.productId = printer.productId;
@@ -52,14 +49,14 @@ class USBPrinterManager extends PrinterManager {
 
   @override
   Future<ConnectionResponse> connect(
-      {Duration timeout: const Duration(seconds: 5)}) async {
+      {Duration? timeout: const Duration(seconds: 5)}) async {
     if (Platform.isWindows) {
       try {
         docInfo = calloc<DOC_INFO_1>()
           ..ref.pDocName = pDocName
           ..ref.pOutputFile = nullptr
           ..ref.pDatatype = pDataType;
-        szPrinterName = printer.name.toNativeUtf16();
+        szPrinterName = printer.name!.toNativeUtf16();
 
         final phPrinter = calloc<HANDLE>();
         if (OpenPrinter(szPrinterName, phPrinter, nullptr) == FALSE) {
@@ -81,7 +78,7 @@ class USBPrinterManager extends PrinterManager {
         return Future<ConnectionResponse>.value(ConnectionResponse.timeout);
       }
     } else if (Platform.isAndroid) {
-      var usbDevice = await usbPrinter.connect(vendorId, productId);
+      var usbDevice = await usbPrinter.connect(vendorId!, productId!);
       if (usbDevice != null) {
         print("vendorId $vendorId, productId $productId ");
         this.isConnected = true;
@@ -104,15 +101,15 @@ class USBPrinterManager extends PrinterManager {
   }
 
   @override
-  Future<ConnectionResponse> disconnect({Duration timeout}) async {
+  Future<ConnectionResponse> disconnect({Duration? timeout}) async {
     if (Platform.isWindows) {
       // Tidy up the printer handle.
       ClosePrinter(hPrinter);
-      free(phPrinter);
+      free(phPrinter!);
       free(pDocName);
       free(pDataType);
-      free(dwBytesWritten);
-      free(docInfo);
+      free(dwBytesWritten!);
+      free(docInfo!);
       free(szPrinterName);
 
       this.isConnected = false;
@@ -145,7 +142,7 @@ class USBPrinterManager extends PrinterManager {
         }
 
         // Inform the spooler the document is beginning.
-        final dwJob = StartDocPrinter(hPrinter, 1, docInfo);
+        final dwJob = StartDocPrinter(hPrinter, 1, docInfo!);
         if (dwJob == 0) {
           PosPrinterManager.logger.error("dwJob == 0");
           ClosePrinter(hPrinter);
@@ -162,7 +159,7 @@ class USBPrinterManager extends PrinterManager {
         // Send the data to the printer.
         final lpData = data.toUint8();
         dwCount = data.length;
-        if (WritePrinter(hPrinter, lpData, dwCount, dwBytesWritten) == 0) {
+        if (WritePrinter(hPrinter, lpData, dwCount!, dwBytesWritten!) == 0) {
           PosPrinterManager.logger.error("WritePrinter == 0");
           EndPagePrinter(hPrinter);
           EndDocPrinter(hPrinter);
@@ -184,7 +181,7 @@ class USBPrinterManager extends PrinterManager {
         }
 
         // Check to see if correct number of bytes were written.
-        if (dwBytesWritten.value != dwCount) {
+        if (dwBytesWritten!.value != dwCount) {
           PosPrinterManager.logger.error("dwBytesWritten.value != dwCount");
         }
 
@@ -210,7 +207,7 @@ class USBPrinterManager extends PrinterManager {
 
       /// maxChunk limit on android
       var datas = bytes.chunkBy(max);
-      await Future.forEach(datas, (data) async => await usbPrinter.write(data));
+      await Future.forEach(datas, (dynamic data) async => await usbPrinter.write(data));
       PosPrinterManager.logger("end write bytes.length${bytes.length}");
 
       if (isDisconnect) {

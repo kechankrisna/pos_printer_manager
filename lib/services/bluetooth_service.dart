@@ -1,5 +1,4 @@
 import 'dart:io';
-// import 'package:flutter_blue/flutter_blue.dart' as fblue;
 import 'package:blue_thermal_printer/blue_thermal_printer.dart' as thermal;
 import '../pos_printer_manager.dart';
 
