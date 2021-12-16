@@ -1,3 +1,7 @@
+## 0.0.5
+
+* null safety
+
 ## 0.0.4+1
 
 * android support usb flutter_usb_printer
