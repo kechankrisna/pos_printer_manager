@@ -84,8 +84,7 @@ class BluetoothPrinterManager extends PrinterManager {
         await connect();
       }
       if (Platform.isAndroid || Platform.isIOS) {
-        final bool? _isConnected = await bluetooth.isConnected;
-        if (_isConnected != null && _isConnected) {
+        if (await bluetooth.isConnected as bool) {
           Uint8List message = Uint8List.fromList(data);
           PosPrinterManager.logger.warning("message.length ${message.length}");
           await bluetooth.writeBytes(message);
