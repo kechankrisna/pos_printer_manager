@@ -24,9 +24,17 @@ class ESCPrinterService {
     assert(_paperSize != null);
     assert(_profile != null);
     Generator generator = Generator(_paperSize!, _profile!);
-    final img.Image _resize =
-        img.copyResize(img.decodeImage(receipt!)!, width: _paperSize!.width);
-    bytes += generator.image(_resize);
+    final img.Image resize = img.copyResize(img.decodeImage(receipt!)!, width: _paperSize!.width);
+
+    // Using `ESC *`
+    // bytes += generator.image(finImg);
+
+    // Using `GS v 0` (obsolete)
+    bytes += generator.imageRaster(resize);
+
+    // Using `GS ( L`
+    // bytes += generator.imageRaster(finImg, imageFn: PosImageFn.graphics);
+
     bytes += generator.feed(2);
     bytes += generator.cut();
     return bytes;

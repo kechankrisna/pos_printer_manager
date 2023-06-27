@@ -18,7 +18,7 @@ dependencies:
   network_info_plus: ^2.1.2
   easy_logger: ^0.0.2
   printing: ^5.6.6
-  win32: ^2.3.1
+  win32: any
   ffi: ^1.1.2
   flutter_usb_printer:  ^0.1.0
 
