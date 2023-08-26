@@ -14,7 +14,7 @@ class NetworkPrinterManager extends PrinterManager {
     PaperSize paperSize,
     CapabilityProfile profile, {
     int spaceBetweenRows = 5,
-    int port: 9100,
+    int port = 9100,
   }) {
     super.printer = printer;
     super.address = printer.address;
@@ -28,7 +28,7 @@ class NetworkPrinterManager extends PrinterManager {
 
   /// [connect] let you connect to a network printer
   Future<ConnectionResponse> connect(
-      {Duration? timeout: const Duration(seconds: 5)}) async {
+      {Duration? timeout = const Duration(seconds: 5)}) async {
     try {
       this.socket = await Socket.connect(address, port, timeout: timeout);
       this.isConnected = true;
@@ -59,7 +59,7 @@ class NetworkPrinterManager extends PrinterManager {
   /// [writeBytes] let you write raw list int data into socket
   @override
   Future<ConnectionResponse> writeBytes(List<int> data,
-      {bool isDisconnect: true}) async {
+      {bool isDisconnect = true}) async {
     try {
       if (!isConnected) {
         await connect();

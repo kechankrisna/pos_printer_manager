@@ -9,8 +9,8 @@ class USBPrinter extends POSPrinter {
     int? deviceId,
     int? vendorId,
     int? productId,
-    bool connected: false,
-    int type: 0,
+    bool connected = false,
+    int type = 0,
     ConnectionType? connectionType,
   }) {
     this.id = id;

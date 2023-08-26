@@ -19,7 +19,7 @@ class BluetoothPrinterManager extends PrinterManager {
     PaperSize paperSize,
     CapabilityProfile profile, {
     int spaceBetweenRows = 5,
-    int port: 9100,
+    int port = 9100,
   }) {
     super.printer = printer;
     super.address = printer.address;
@@ -33,7 +33,7 @@ class BluetoothPrinterManager extends PrinterManager {
 
   /// [connect] let you connect to a bluetooth printer
   Future<ConnectionResponse> connect(
-      {Duration? timeout: const Duration(seconds: 5)}) async {
+      {Duration? timeout = const Duration(seconds: 5)}) async {
     try {
       // if (Platform.isIOS) {
       // fbdevice = fblue.BluetoothDevice.fromProto(proto.BluetoothDevice(

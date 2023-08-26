@@ -6,8 +6,8 @@ class BluetoothPrinter extends POSPrinter {
     String? id,
     String? name,
     String? address,
-    bool connected: false,
-    int type: 0,
+    bool connected = false,
+    int type = 0,
     ConnectionType? connectionType,
   }) {
     this.id = id;

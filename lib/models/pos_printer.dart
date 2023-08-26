@@ -22,8 +22,8 @@ class POSPrinter {
     this.deviceId,
     this.vendorId,
     this.productId,
-    this.connected: false,
-    this.type: 0,
+    this.connected = false,
+    this.type = 0,
     this.connectionType,
   });
 }
