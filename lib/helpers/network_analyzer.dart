@@ -58,9 +58,11 @@ class NetworkAnalyzer {
   /// Pings a given [subnet] (xxx.xxx.xxx) on a given [port].
   ///
   /// Pings IP:PORT all at once
+  /// use onError to handle if ping error for some host
   static Stream<NetworkAddress> discover2(
     String subnet,
     int port, {
+    Function(String host, Exception exception)? onError,
     Duration timeout = const Duration(seconds: 5),
   }) {
     if (port < 1 || port > 65535) {
@@ -70,7 +72,7 @@ class NetworkAnalyzer {
 
     final out = StreamController<NetworkAddress>();
     final futures = <Future<Socket>>[];
-    for (int i = 1; i < 256; ++i) {
+    for (int i = 1; i < 255; ++i) {
       final host = '$subnet.$i';
       final Future<Socket> f = _ping(host, port, timeout);
       futures.add(f);
@@ -87,7 +89,12 @@ class NetworkAnalyzer {
           out.sink.add(NetworkAddress(host, false));
         } else {
           // Error 23,24: Too many open files in system
-          throw e;
+          /// print(host);
+          if (onError != null) {
+            onError.call(host, e);
+          }
+
+          /// throw e;
         }
       });
     }
