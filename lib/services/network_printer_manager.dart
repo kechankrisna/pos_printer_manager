@@ -85,6 +85,7 @@ class NetworkPrinterManager extends PrinterManager {
   /// [timeout]: milliseconds to wait after closing the socket
   Future<ConnectionResponse> disconnect({Duration? timeout}) async {
     await socket?.flush();
+    socket?.destroy();
     await socket?.close();
     this.isConnected = false;
     if (timeout != null) {
