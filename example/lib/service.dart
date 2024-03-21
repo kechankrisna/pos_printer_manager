@@ -26,7 +26,7 @@ class ESCPrinterService {
     Generator generator = Generator(_paperSize!, _profile!);
     final img.Image _resize =
         img.copyResize(img.decodeImage(receipt!)!, width: _paperSize!.width);
-    bytes += generator.image(_resize);
+    bytes += generator.imageRaster(_resize);
     bytes += generator.feed(2);
     bytes += generator.cut();
     return bytes;

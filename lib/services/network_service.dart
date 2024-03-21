@@ -14,6 +14,7 @@ Future<List<String>> findNetworkPrinter({int port = 9100}) async {
   PosPrinterManager.logger.info("ip: $ip");
   final String subnet = ip!.substring(0, ip.lastIndexOf('.'));
   PosPrinterManager.logger.info("subnet: $subnet");
+  PosPrinterManager.logger.info("port: $port");
 
   final stream = NetworkAnalyzer.discover2(subnet, port);
   var results = await stream.toList();
@@ -25,7 +26,9 @@ Future<List<String>> findNetworkPrinter({int port = 9100}) async {
 Future<List<String>> getAddresses() async {
   var interfaces = await NetworkInterface.list();
   List<String> results = [];
-  interfaces.fold(results,
-      (dynamic pre, e) => results.addAll(e.addresses.map((e) => e.address).toList()));
+  interfaces.fold(
+      results,
+      (dynamic pre, e) =>
+          results.addAll(e.addresses.map((e) => e.address).toList()));
   return results;
 }

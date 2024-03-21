@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:pos_printer_manager/models/pos_printer.dart';
 import 'package:pos_printer_manager/pos_printer_manager.dart';
+import 'package:pos_printer_manager/services/extension.dart';
 import 'network_service.dart';
 import 'printer_manager.dart';
 
@@ -65,7 +66,12 @@ class NetworkPrinterManager extends PrinterManager {
         await connect();
       }
       print(this.socket);
-      this.socket?.add(data);
+      final chunked = data.chunkBy(1250);
+      final stream = Stream<List<int>>.fromIterable(chunked);
+      // add chunked stream
+      await socket!.addStream(stream);
+
+      /// this.socket?.add(data);
       if (isDisconnect) {
         await disconnect();
       }
@@ -79,6 +85,7 @@ class NetworkPrinterManager extends PrinterManager {
   /// [timeout]: milliseconds to wait after closing the socket
   Future<ConnectionResponse> disconnect({Duration? timeout}) async {
     await socket?.flush();
+    socket?.destroy();
     await socket?.close();
     this.isConnected = false;
     if (timeout != null) {

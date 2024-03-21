@@ -10,7 +10,7 @@ extension IntParsing on List<int> {
     return result;
   }
 
-  List<List<int>> chunkBy(num value) {
+  List<List<int>> chunkBy(num value, {bool isDebug = false}) {
     List<List<int>> result = [];
     final size = this.length;
     int max = size ~/ value;
@@ -28,7 +28,9 @@ extension IntParsing on List<int> {
           endIndex = size;
         }
         var sub = this.sublist(startIndex, endIndex);
-        print("startIndex=$startIndex || endIndex=$endIndex");
+        if (isDebug) {
+          print("startIndex=$startIndex || endIndex=$endIndex");
+        }
         result.add(sub);
       }
     }
